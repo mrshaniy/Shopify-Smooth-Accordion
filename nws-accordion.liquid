@@ -1,0 +1,155 @@
+{{ 'nws-accordion.css' | asset_url | stylesheet_tag }}
+{% style %}
+  .nws-accordion {
+    {% if section.settings.slct-bg == 'gradient' %}background:{{ section.settings.section_background_gradient }};{% endif %}
+    {% if section.settings.slct-bg == 'solid' %}background:{{ section.settings.section-background }};{% endif %}
+  }
+{% endstyle %}
+<!-- nws-accordion.liquid -->
+<div class="nws-accordion nws-same-padding {{ section.settings.section-extra-class }}">
+  <div class="nws-custom-container">
+    <!-- section header start -->
+    <div class="nws-section-header">
+      {% if section.settings['section-title'] != blank %}
+        <h2 class="section-title">{{ section.settings['section-title'] }}</h2>
+      {% endif %}
+      {% if section.settings.section_desc != blank %}
+        <div class="section-desc">{{ section.settings.section_desc }}</div>
+      {% endif %}
+    </div>
+    <!-- section header end -->
+    <div class="nws-ac-container">
+      <div class="acc-block">
+        {% for block in section.blocks %}
+          <div class="nws-ac-item">
+            <h3 class="nws-ac-title">{{ block.settings.question }}</h3>
+            <div class="nws-ac-body">
+              {{ block.settings.answer }}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      {% if section.settings.btn_name != blank %}
+        <a href="{{ section.settings.btn_link }}" class="nws-faq-btn">{{ section.settings.btn_name }}</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Nws Accordion",
+  "disabled_on": {
+  "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "options": [
+        { "value": "gradient", "label": "Gradient" },
+        { "value": "solid", "label": "Background Color"}
+        ],
+      "id": "slct-bg",
+      "default": "solid",
+      "label": "Section Background Type"
+    },
+    {
+      "type": "color_background",
+      "label": "Section Background Gradient",
+      "id": "section_background_gradient"
+    },
+    {
+      "type": "color",
+      "id": "section-background",
+      "default": "#f9f4ed",
+      "info": "Background",
+      "label": "Section Background"
+    },
+     {
+      "type": "text",
+      "id": "section-extra-class",
+      "info": "Add section class (without.). Use spaces to add multiple classes",
+      "label": "Section Class"
+    },
+    {
+      "type": "text",
+      "id": "section-title",
+      "default": "Lorem Ipsum",
+      "label": "Heading (Optional)"
+    },
+    {
+      "type": "richtext",
+      "id": "section_desc",
+      "label": "Description (Optional)"
+    },
+    {
+      "type": "text",
+      "id": "btn_name",
+      "label": "Button Label"
+    },
+    {
+      "type": "url",
+      "id": "btn_link",
+      "label": "Paste URL"
+    }
+  ],
+"blocks":[
+  {
+    "type": "Accordion",
+    "name": "Accordion Item",
+    "settings":[
+      {
+        "type": "text",
+        "id": "question",
+        "default": "Question?",
+        "label": "Question"
+      },
+      {
+        "type": "richtext",
+        "id": "answer",
+        "default": "<p>Lorem Ipsum dolar sit emit</p>",
+        "label": "Answer"
+      }
+    ]
+  }
+],
+  "presets": [
+    {
+      "name": "Nws Accordion",
+      "category": "Nws Custom Section",
+    "blocks":[
+      {
+        "type": "Accordion"
+      },
+      {
+        "type": "Accordion"
+      },
+      {
+        "type": "Accordion"
+      },
+      {
+        "type": "Accordion"
+      }
+    ]
+    }
+  ]
+}
+{% endschema %}
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script>
+    $(document).ready(function() {
+        // Add click event to elements with class "nws-ac-title"
+        $('.nws-ac-title').on('click', function() {
+            // Toggle the new class on the parent element with class "nws-ac-item"
+            $(this).parent('.nws-ac-item').toggleClass('nws-active-ac-item');
+
+            // Toggle the visibility of the associated content
+            $(this).next('.nws-ac-body').slideToggle();
+
+            // Hide content and remove class from other items
+            $('.nws-ac-title').not(this).next('.nws-ac-body').slideUp();
+            $('.nws-ac-item').not($(this).parent('.nws-ac-item')).removeClass('nws-active-ac-item');
+        });
+      $('.nws-ac-item:first-child .nws-ac-body').slideDown();
+  $('.nws-ac-item:first-child').addClass('nws-active-ac-item');
+    });
+</script>
